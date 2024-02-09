@@ -1,8 +1,8 @@
 import os from 'os';
-import http, { IncomingMessage } from 'http';
+import http from 'http';
 import cluster from 'cluster';
 import { serverUsers } from './data/user_storage.ts';
-import { User, PostNewUser } from './data/types.ts';
+import { PostNewUser } from './data/types.ts';
 
 const PORT = 4000;
 const plainEndpointURL = '/api/users';
@@ -34,6 +34,36 @@ const requestListener: http.RequestListener = async (req, res) => {
                         hobbies: parsedJson.hobbies || []
                     }
                     res.end(JSON.stringify(serverUsers.addUser(createNew)));
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error.message);
+                const responseErr = {
+                    code: 400,
+                    data: 'Invalid JSON format'
+                };
+                res.end(JSON.stringify(responseErr));
+            }
+        });
+    } else if (req.method === "PUT") {
+        let body = ''; 
+        const updId = req.url.slice('/api/users/'.length);
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const parsedJson = await JSON.parse(body);
+                if (!parsedJson.username || !parsedJson.age || !parsedJson.hobbies) {
+                    const responseErr = {
+                        code: 400,
+                        data: '"username", "age", "hobbies" are required fields'
+                    }
+                    res.end(JSON.stringify(responseErr));
+                } else {
+                    const updateUser: PostNewUser = {
+                        username: parsedJson.username || "",
+                        age: parsedJson.age || 0,
+                        hobbies: parsedJson.hobbies || []
+                    }
+                    res.end(JSON.stringify(serverUsers.updateUser(updId as string, updateUser)));
                 }
             } catch (error) {
                 console.error('Error parsing JSON:', error.message);

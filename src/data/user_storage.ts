@@ -46,6 +46,33 @@ class Users {
         }
     }
 
+    public updateUser(updId: string, updUser: PostNewUser) {
+        if (updId === '' || updId === ' ' || !this.uidValidation(updId)) {
+            return {
+                code: 400,
+                data: `The user's Id is invalid`
+            }
+        } else if (this.userList.find(element => element.id === updId)) {
+            const updItem: User = {
+                id: updId,
+                username: updUser.username,
+                age: updUser.age,
+                hobbies: updUser.hobbies ? updUser.hobbies : []
+            }
+            this.userList = this.userList.filter(element => element.id !== updId);
+            this.userList.push(updItem);
+            return {
+                code: 200,
+                data: `user with id = ${updId} updated`
+            }
+        } else {
+            return {
+                code: 404,
+                data: `user with id = ${updId} doesn\'t exists`
+            }
+        }        
+    }
+
     public deleteUser(delId: string) {
         if (delId === '' || delId === ' ' || !this.uidValidation(delId)) {
             return {
