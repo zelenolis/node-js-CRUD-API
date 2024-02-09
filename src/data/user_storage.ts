@@ -47,8 +47,13 @@ class Users {
     }
 
     public deleteUser(delId: string) {
-        if (this.userList.find(element => element.id === delId)) {
-            this.userList.filter(element => element.id !== delId);
+        if (delId === '' || delId === ' ' || !this.uidValidation(delId)) {
+            return {
+                code: 400,
+                data: `The user's Id is invalid`
+            }
+        } else if (this.userList.find(element => element.id === delId)) {
+            this.userList = this.userList.filter(element => element.id !== delId);
             return {
                 code: 204,
                 data: `user with id = ${delId} found and deleted`
@@ -63,7 +68,6 @@ class Users {
 
     private uidValidation(uid: string) {
         const uuidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        console.log(`validation is: ${uuidPattern.test(uid)}`);
         return uuidPattern.test(uid);
     }
 }

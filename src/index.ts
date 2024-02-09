@@ -44,6 +44,9 @@ const requestListener: http.RequestListener = async (req, res) => {
                 res.end(JSON.stringify(responseErr));
             }
         });
+    } else if (req.url.startsWith(endpointURL) && req.method === "DELETE") {
+        const requestedUser = req.url.slice('/api/users/'.length);
+        res.end(JSON.stringify(serverUsers.deleteUser(requestedUser as string)));
     } else {
         res.end({
             code: 404,
