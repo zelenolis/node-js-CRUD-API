@@ -10,7 +10,7 @@
       "allowImportingTsExtensions": true,
       "outDir": "dist",
       "lib": [ "esnext" ],
-      "types": [ "node" ],
+      "types": [ "node", "jest" ],
       "baseUrl": "./",
     },
     "exclude": [ "node_modules" ],

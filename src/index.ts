@@ -1,15 +1,11 @@
-import os from 'os';
 import http from 'http';
-import cluster from 'cluster';
 import { serverUsers } from './data/user_storage.ts';
 import { PostNewUser } from './data/types.ts';
 
-const PORT = 4000;
 const plainEndpointURL = '/api/users';
 const endpointURL = '/api/users/';
-const pid = process.pid;
 
-const requestListener: http.RequestListener = async (req, res) => {
+export const requestListener: http.RequestListener = async (req, res) => {
     if (req.url == plainEndpointURL && req.method === "GET") {
         res.end(JSON.stringify(serverUsers.getAllUsers()));
     } else if (req.url.startsWith(endpointURL) && req.method === "GET") {
@@ -36,7 +32,6 @@ const requestListener: http.RequestListener = async (req, res) => {
                     res.end(JSON.stringify(serverUsers.addUser(createNew)));
                 }
             } catch (error) {
-                console.error('Error parsing JSON:', error.message);
                 const responseErr = {
                     code: 400,
                     data: 'Invalid JSON format'
@@ -66,7 +61,6 @@ const requestListener: http.RequestListener = async (req, res) => {
                     res.end(JSON.stringify(serverUsers.updateUser(updId as string, updateUser)));
                 }
             } catch (error) {
-                console.error('Error parsing JSON:', error.message);
                 const responseErr = {
                     code: 400,
                     data: 'Invalid JSON format'
@@ -85,7 +79,7 @@ const requestListener: http.RequestListener = async (req, res) => {
     }
 }
 
-const server = http.createServer(requestListener);
+export const server = http.createServer(requestListener);
 
 server.listen(4000, () => {
     console.log('Server running at http://localhost:4000');
