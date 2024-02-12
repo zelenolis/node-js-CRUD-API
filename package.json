@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "startapp": "nodemon --env-file=.env app.ts",
+    "startapp": "nodemon --env-file=.env src/index.ts",
     "startapp:multi": "nodemon --env-file=.env app.ts --multi",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts"
